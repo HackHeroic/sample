@@ -53,16 +53,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F5DC] flex flex-col">
+    <div className="min-h-screen bg-[#F5F5DC]">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+      <header className="bg-white border-b border-gray-200 fixed top-0 left-0 right-0 z-50">
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
               size="icon"
               className="lg:hidden"
-              onClick={() => setSidebarOpen(true)}
+              onClick={() => setSidebarOpen(!sidebarOpen)}
               aria-label="Toggle sidebar"
             >
               <Menu className="h-5 w-5" />
@@ -85,60 +85,56 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
         </div>
       </header>
-      {/* Main Content Area */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar */}
-        <aside
-          className={cn(
-            "bg-white border-r border-gray-200 transition-all duration-300 ease-in-out z-40",
-            "lg:w-64 w-64 fixed inset-y-0 left-0 transform",
-            sidebarOpen ? "translate-x-0" : "-translate-x-full",
-            "lg:translate-x-0 lg:static lg:h-full h-[calc(100vh-57px)]"
-          )}
-        >
-          <nav className="p-4 space-y-2 h-full overflow-y-auto">
-            {visibleNavItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setSidebarOpen(false)}
-                  className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
-                    isActive
-                      ? "bg-[#6B46C1] text-white"
-                      : "text-gray-700 hover:bg-gray-100"
-                  )}
-                  aria-current={isActive ? "page" : undefined}
-                >
-                  <Icon className="h-5 w-5" />
-                  <span className="font-medium">{item.name}</span>
-                </Link>
-              );
-            })}
-          </nav>
-        </aside>
-        {/* Overlay for mobile sidebar */}
-        {sidebarOpen && (
-          <div
-            className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-            onClick={() => setSidebarOpen(false)}
-            aria-hidden="true"
-          />
+
+      {/* Overlay for mobile sidebar */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-30 lg:hidden mt-[57px]"
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside
+        className={cn(
+          "bg-white border-r border-gray-200 transition-transform duration-300 ease-in-out",
+          "w-64 fixed left-0 h-[calc(100vh-57px)] top-[57px] z-40",
+          "lg:translate-x-0",
+          sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
-        {/* Main Content */}
-        <main
-          className={cn(
-            "flex-1 p-4 lg:p-8 transition-all duration-300 ease-in-out",
-            "lg:ml-64 ml-0",
-            sidebarOpen ? "ml-64" : "ml-0"
-          )}
-        >
+      >
+        <nav className="p-4 space-y-2 h-full overflow-y-auto">
+          {visibleNavItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setSidebarOpen(false)}
+                className={cn(
+                  "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
+                  isActive
+                    ? "bg-[#6B46C1] text-white"
+                    : "text-gray-700 hover:bg-gray-100"
+                )}
+                aria-current={isActive ? "page" : undefined}
+              >
+                <Icon className="h-5 w-5" />
+                <span className="font-medium">{item.name}</span>
+              </Link>
+            );
+          })}
+        </nav>
+      </aside>
+
+      {/* Main Content */}
+      <main className="pt-[57px] lg:ml-64 min-h-screen">
+        <div className="p-4 lg:p-8">
           {children}
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   );
 }
